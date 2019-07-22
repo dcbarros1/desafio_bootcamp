@@ -7,7 +7,12 @@ module Api
                 render json:{status: 'Sucesso', message: 'Agendamentos', data:agenda}, status: :ok
 
             end
-            
+
+            def show 
+                agenda = Agenda.find(params[:medico])
+                render json:{status: 'Agenda do médico', message: 'Carregamento feito com sucesso', data:agenda}, status: :ok
+            end
+
             def create
                 agenda = Agenda.new(agenda_params)
                 agenda.fim_consulta = agenda.agendamento + 30.minutes
@@ -20,6 +25,20 @@ module Api
                 end
             end
 
+            def destroy
+                agenda = Agenda.find(params[:id])
+                agenda.destroy
+                render json:{status: 'Registro apagado', message: 'Registro apagado com sucesso', data:agenda}, status: :ok
+            end
+
+            def update
+                agenda = Agenda.find(params[:id])
+                if agenda.update_attributes(article_params)
+                    render json:{status: 'Registro modificado', message: 'Registro modificado com sucesso', data:agenda}, status: :ok
+                else
+                    render json:{status: 'Erro na modificação', message: 'Agendamento não modificado', data:agenda.errors}, status: :unprocessable_entity
+                end
+            end
             private
 
             def agenda_params
